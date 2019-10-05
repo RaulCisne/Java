@@ -1,0 +1,71 @@
+import java.util.Scanner;
+
+public class Build {
+	Scanner in = new Scanner(System.in);
+	
+	//Array of x-coordinates
+	int X[];
+	//Array of y-coordinates
+	int Y[];
+	//Global civilization variable
+	int C;
+	
+	//Method initializing the grid size
+	public int grid() {
+		System.out.println("How large is the space? (NxN) :");
+		
+		return in.nextInt();
+		
+	}
+	
+	//Method setting the starting points
+	public void startingPoints(char A[][]) {
+		int a = 0;
+		int x = 0;
+		int y = 0;
+		
+		System.out.println("How many civilizations start out :");
+		C = in.nextInt();
+		X = new int[C];
+		Y = new int[C];
+		
+		//Records the coordinates for each starting point
+		for(int i = 0; i < C; i++) {
+			
+			while(a == 0) {
+			System.out.println("Input X-coordinate: ");
+			x = in.nextInt();
+			if(x < 0 || x >= A.length)
+				System.out.println("Please input a valid coordinate");
+			else
+				a = 1;
+			}
+			
+			while(a == 1) {
+			System.out.println("Input Y-coordinate: ");
+			y = in.nextInt();
+			if(y < 0 || y >= A.length)
+				System.out.println("Please input a valid coordinate");
+			else
+				a = 0;
+			}
+			X[i] = x;
+			Y[i] = y;
+			
+			//civilization identifier
+			A[x][y] = '@';
+		}
+	}
+	
+	//Returns coordinates of starting points
+	public void getPoints(int A[], int B[]) {
+		for(int i = 0; i < C; i++) {
+			A[i] = X[i];
+			B[i] = Y[i];
+		}
+	}
+	
+	public int getCivNum() {
+		return C;
+	}
+}
