@@ -1,0 +1,2 @@
+This program simulates expanding civilization(s) to a square adjacent to them per year.
+If the path they expand can connect them all, it returns the number of years it took to reach that point
