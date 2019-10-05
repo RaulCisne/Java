@@ -1,0 +1,210 @@
+import java.util.*;
+
+//Node Class
+class Node{
+	int x;
+	int y;
+
+	Node(int x, int y){
+		this.x = x;
+		this.y = y;
+	}
+}
+
+
+public class Sim {
+	//					main array, starting x and y,
+	public void startSim(char A[][], int X[], int Y[]) throws InterruptedException{
+		
+		//Main queue that determines next run
+		List<Node> queue = new ArrayList<Node>();
+		//Copy queue so that original doesn't get altered 
+		List<Node> queue2 = new ArrayList<Node>();
+		
+		//Final output counter
+		int years = 0;
+		
+		//Adds starting points to the queue to collect neighbors
+		for(int i = 0; i < X.length; i++)
+			queue.add(new Node(X[i], Y[i]));
+		
+		//Adds starting points' neighbors to the queue
+		for(int i = 0; i < X.length; i++) {
+			List<Node> neighbors = getNeighbors(A, queue.remove(0));
+			queue.addAll(neighbors);
+		}
+		
+		boolean end = false;
+		
+		//Runs until completion of program
+		//Grows to surrounding squares per year
+		do {
+			
+			
+			//displaySim(A);
+			//displaySim(B);
+			
+			//Adds original queue to copy queue
+			queue2.addAll(queue);
+			
+			//clears so next iteration can fill this queue
+			queue.clear();
+			
+			//Runs conditions to expand anything set in the last queue 
+			while(!queue2.isEmpty()) {
+				
+				Node current = queue2.remove(0);
+				
+				if(A[current.x][current.y] == '*') {
+					A[current.x][current.y] = 'a';
+					List<Node> neighbors = getNeighbors(A, current);
+					//All new neighbors get added to the original queue so copy queue can run out of things to add
+					queue.addAll(neighbors);
+				}
+				else if(A[current.x][current.y] == 'a');
+				else if(A[current.x][current.y] == '@');
+			}
+			
+			char B[][] = new char[A.length][A.length];
+			
+			//Creates copy of main array and sends it to pathcheck
+			for(int i = 0; i < A.length; i++) {
+				for(int j = 0; j < A.length; j++)
+					B[i][j] = A[i][j];
+			}
+			
+			//displaySim(A);
+			
+			//Checks if there is path between points and returns boolean
+			end = path(B, X, Y);
+			
+			//System.out.println(end);
+			
+			//Thread.sleep(1000);
+			
+			//Runs output counter up per loop done
+			years++;
+			
+		}while(end == false);
+		
+		System.out.println("It will take " + years + " years.");
+	}
+	
+	//					main array, coordinates of the starting points
+	public boolean path(char A[][], int X[], int Y[]) throws InterruptedException{
+		
+		List<Node> Q = new ArrayList<Node>();
+		
+		int count = 0;
+		
+		//Apparently this makes it pass by reference and doesn't make a copy
+		//Doesn't matter here because the array passed here is a copy
+		char C[][] = A;
+		
+		Node N = new Node(X[0], Y[0]);
+		
+		//Starts by adding starting point in queue
+		Q.add(N);
+		
+		//Gets surrounding blocks
+		List<Node> neighbors = getNeighbors(A, N);
+		
+		//Adds all to List
+		Q.addAll(neighbors);
+		
+		
+		//while loop that tests if there is a path
+		while(!Q.isEmpty()) {
+			
+			Node current = Q.remove(0);
+			
+			//Check points
+			//displaySim(C);
+			
+			//Thread.sleep(200);
+			
+			//System.out.println(current.x + "," + current.y + " " + C[current.x][current.y]);
+			
+			//If maximum number of civilizations have been counted
+			if(count == X.length)
+				break;
+			
+			//If encountered starting civilization
+			else if(C[current.x][current.y] == '@') {
+				count++;
+				//System.out.println(count);
+				List<Node> neighbors1 = getNeighbors(A, current);
+				
+				Q.addAll(neighbors1);
+				
+				//changes visited points into a wall
+				C[current.x][current.y] = '*';
+			}
+			
+			else if(C[current.x][current.y] == '*');
+			
+			//If standard path block
+			else {
+				List<Node> neighbors1 = getNeighbors(A, current);
+				
+				//Removes extra walls that would go into queue
+				for(int k = 0; k < neighbors1.size(); k++) {
+					if(C[neighbors1.get(k).x][neighbors1.get(k).y] == '*')
+						neighbors1.remove(k);
+				}
+				
+				Q.addAll(neighbors1);
+				
+				//changes visited point into a wall
+				C[current.x][current.y] = '*';
+			}
+			
+			
+			
+			
+			
+			
+		}
+		
+		//Parameter that checks if it found all starting points
+		if(count == X.length)
+			return true;
+		else return false;
+		
+	}
+	
+	//Displays current state of simulation
+	public void displaySim(char A[][]) {
+		System.out.print("\n\n\n\n\n");
+		for(int y = 0; y < A.length; y++) {		
+			for(int x = 0; x < A.length; x++)
+				System.out.print(A[y][x]);
+			System.out.print("\n");
+		}
+	}
+	
+	//Gets nodes neighbors
+	public static List<Node> getNeighbors(char A[][], Node N){
+		List<Node> neighbors = new ArrayList<Node>();
+		
+		if(isValidPoint(A, N.x - 1, N.y)) 
+			neighbors.add(new Node(N.x - 1, N.y));
+				
+		if(isValidPoint(A, N.x, N.y - 1)) 
+			neighbors.add(new Node(N.x, N.y - 1));
+		
+		if(isValidPoint(A, N.x + 1, N.y)) 
+			neighbors.add(new Node(N.x + 1, N.y));
+		
+		if(isValidPoint(A, N.x, N.y + 1)) 
+			neighbors.add(new Node(N.x, N.y + 1));
+		
+		return neighbors;
+	}
+	
+	//Checks if point surrounding current point is not out of bounds
+	public static boolean isValidPoint(char A[][], int x, int y) {
+		return!(x < 0 || x >= A.length || y < 0 || y >= A.length);
+	}
+		
+	}
