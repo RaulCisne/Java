@@ -1,0 +1,46 @@
+//import java.util.Scanner;
+//Raul Cisneros
+//Homework 1
+
+public class Main {
+
+	public static void main(String[] args) throws InterruptedException {
+		int C;
+		//Initializing build class
+		Build B = new Build();
+		
+		//Initializing simulation class
+		Sim S = new Sim();
+		
+		//Building grid size
+		int n = B.grid();
+		
+		//Declaring array
+		char [][] A = new char[n][n];
+		
+		//initializing array
+		for(int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++)
+				A[i][j] = '*';
+		}
+		
+		//Setting starting points
+		B.startingPoints(A);
+		
+		C = B.getCivNum();
+		
+		
+		//x-coordinate points
+		int X[] = new int [C];
+		//y-coordinate points
+		int Y[] = new int [C];
+		
+		//Stores points in arrays
+		B.getPoints(X, Y);
+		
+		//Runs simulation
+		S.startSim(A, X, Y);
+		
+	}
+
+}
